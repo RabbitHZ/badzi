@@ -1,8 +1,10 @@
 "use client"
 
 import type React from "react"
-import { Check, Copy } from "lucide-react"
+import { Check, Copy, ExternalLink } from "lucide-react"
 import { useState, useEffect } from "react"
+import { useSearchParams } from "next/navigation"
+import Link from "next/link"
 
 interface Toast {
   id: number
@@ -63,6 +65,7 @@ function copyToClipboard(text: string, label: string) {
 }
 
 export function GlassmorphicNav() {
+  const searchParams = useSearchParams()
   const [toast, setToast] = useState<Toast | null>(null)
   const [formData, setFormData] = useState<BadgeFormData>({
     url: "",
@@ -71,6 +74,14 @@ export function GlassmorphicNav() {
     fontSize: 12,
     styleType: "default",
   })
+
+  // URL 파라미터에서 styleType 읽어서 적용
+  useEffect(() => {
+    const styleTypeParam = searchParams.get("styleType")
+    if (styleTypeParam && ["default", "maple", "rabbit"].includes(styleTypeParam)) {
+      setFormData((prev) => ({ ...prev, styleType: styleTypeParam as StyleType }))
+    }
+  }, [searchParams])
   const [resultData, setResultData] = useState<ResultData | null>(null)
   const [showColorPalette, setShowColorPalette] = useState(false)
   const [colorTab, setColorTab] = useState<"pastel" | "vivid">("pastel")
@@ -304,9 +315,14 @@ export function GlassmorphicNav() {
                 className="w-full px-3 py-2 rounded-lg bg-white/10 border border-white/20 text-white focus:outline-none focus:border-white/40 transition-all cursor-pointer"
               >
                 <option value="default" className="bg-zinc-800 text-white">Default</option>
-                <option value="maple" className="bg-zinc-800 text-white">Maple</option>
-                <option value="rabbit" className="bg-zinc-800 text-white">Rabbit</option>
               </select>
+              <Link
+                href="/store"
+                className="inline-flex items-center gap-1 mt-2 text-white/50 text-xs hover:text-white/80 transition-colors"
+              >
+                <span>Browse more styles</span>
+                <ExternalLink className="w-3 h-3" />
+              </Link>
             </div>
 
             <div className={formData.styleType !== "default" ? "opacity-50 pointer-events-none" : ""}>

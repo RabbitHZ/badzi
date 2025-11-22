@@ -1,3 +1,4 @@
+import { Suspense } from "react"
 import { GlassmorphicNav } from "@/components/glassmorphic-nav"
 
 export default function Home() {
@@ -13,7 +14,9 @@ export default function Home() {
 
       {/* Glassmorphic Navigation Component */}
       <div className="relative z-10 flex items-center justify-center min-h-screen">
-        <GlassmorphicNav />
+        <Suspense fallback={<div className="text-white">Loading...</div>}>
+          <GlassmorphicNav />
+        </Suspense>
       </div>
     </div>
   )
