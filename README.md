@@ -1,6 +1,16 @@
-# Bazzi
+<p align="center">
+  <img src="public/logo.svg" width="80" height="80" alt="Bazzi Logo" />
+</p>
 
-실시간 미리보기를 제공하는 페이지 조회수 트래킹 뱃지 생성기입니다.
+<h1 align="center">Bazzi</h1>
+
+<p align="center">
+  Decorate your GitHub Profile — Craft a badge that's uniquely you.
+</p>
+
+<p align="center">
+  실시간 미리보기를 제공하는 페이지 조회수 트래킹 뱃지 생성기입니다.
+</p>
 
 ## 기능
 

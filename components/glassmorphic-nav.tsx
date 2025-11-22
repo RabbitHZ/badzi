@@ -212,17 +212,41 @@ export function GlassmorphicNav() {
 
   return (
     <div className="relative w-full max-w-7xl mx-auto px-4">
-      <div className="flex gap-8 items-start justify-center">
+      <div className="mb-10 text-center">
+        <div className="flex items-center justify-center gap-3 mb-3">
+          <svg
+            width="44"
+            height="44"
+            viewBox="0 0 44 44"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <rect width="44" height="44" rx="10" fill="white" fillOpacity="0.9" />
+            <text
+              x="22"
+              y="29"
+              fontSize="24"
+              fontWeight="600"
+              fontFamily="system-ui, -apple-system, sans-serif"
+              fill="#18181b"
+              textAnchor="middle"
+            >
+              B
+            </text>
+          </svg>
+          <h1 className="text-4xl font-semibold text-white tracking-tight">
+            Bazzi
+          </h1>
+        </div>
+        <p className="text-white/50 text-sm">
+          Decorate your GitHub Profile — Craft a badge that's uniquely you.
+        </p>
+      </div>
+
+      <div className="flex gap-8 items-stretch justify-center">
         {/* LEFT BOX: Create Your Badge Form */}
         <div className="w-96 p-6 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 shadow-xl">
           <h2 className="text-white font-bold text-xl mb-6">Create Your Badge</h2>
-
-          {/* Info Box */}
-          <div className="mb-6 p-3 rounded-lg bg-blue-500/10 border border-blue-500/30">
-            <p className="text-blue-300 text-xs leading-relaxed">
-              Track your page views in real-time and display them with a beautiful badge.
-            </p>
-          </div>
 
           <div className="space-y-4">
             {/* URL Input */}
