@@ -11,14 +11,11 @@ interface Toast {
   showIcon: boolean
 }
 
-type StyleType = "default" | "maple" | "rabbit"
-
 interface BadgeFormData {
   url: string
   label: string
   color: string
   fontSize: number
-  styleType: StyleType
 }
 
 interface ResultData {
@@ -69,7 +66,6 @@ export function GlassmorphicNav() {
     label: "Views",
     color: "#0d6efd",
     fontSize: 12,
-    styleType: "default",
   })
   const [resultData, setResultData] = useState<ResultData | null>(null)
   const [showColorPalette, setShowColorPalette] = useState(false)
@@ -113,7 +109,6 @@ export function GlassmorphicNav() {
         label: formData.label || "Views",
         color: formData.color.replace("#", ""),
         fontSize: formData.fontSize.toString(),
-        styleType: formData.styleType,
       }).toString()
 
       const endpoint = isPreview ? '/api/badges/preview' : '/api/badges'
@@ -294,46 +289,23 @@ export function GlassmorphicNav() {
               />
             </div>
 
-            {/* Style Type Selection */}
             <div>
-              <label className="text-white/80 text-sm font-medium block mb-2">Style Type</label>
-              <select
-                name="styleType"
-                value={formData.styleType}
-                onChange={(e) => setFormData((prev) => ({ ...prev, styleType: e.target.value as StyleType }))}
-                className="w-full px-3 py-2 rounded-lg bg-white/10 border border-white/20 text-white focus:outline-none focus:border-white/40 transition-all cursor-pointer"
-              >
-                <option value="default" className="bg-zinc-800 text-white">Default</option>
-                <option value="maple" className="bg-zinc-800 text-white">Maple</option>
-                <option value="rabbit" className="bg-zinc-800 text-white">Rabbit</option>
-              </select>
-            </div>
-
-            <div className={formData.styleType !== "default" ? "opacity-50 pointer-events-none" : ""}>
-              <label className="text-white/80 text-sm font-medium block mb-2">
-                Color
-                {formData.styleType !== "default" && (
-                  <span className="ml-2 text-white/50 text-xs font-normal">(Only available for default style)</span>
-                )}
-              </label>
+              <label className="text-white/80 text-sm font-medium block mb-2">Color</label>
               <div className="flex items-center gap-2 mb-3">
                 <input
                   type="text"
                   value={formData.color}
                   onChange={handleColorInputChange}
-                  disabled={formData.styleType !== "default"}
-                  className="flex-1 px-3 py-2 rounded-lg bg-white/10 border border-white/20 text-white placeholder-white/50 focus:outline-none focus:border-white/40 transition-all font-mono text-sm disabled:cursor-not-allowed"
+                  className="flex-1 px-3 py-2 rounded-lg bg-white/10 border border-white/20 text-white placeholder-white/50 focus:outline-none focus:border-white/40 transition-all font-mono text-sm"
                 />
                 <div
-                  className={`w-10 h-10 rounded-lg border border-white/20 shadow-lg transition-all ${
-                    formData.styleType === "default" ? "cursor-pointer hover:border-white/40" : "cursor-not-allowed"
-                  }`}
+                  className="w-10 h-10 rounded-lg border border-white/20 shadow-lg cursor-pointer hover:border-white/40 transition-all"
                   style={{ backgroundColor: formData.color }}
-                  onClick={() => formData.styleType === "default" && setShowColorPalette(!showColorPalette)}
+                  onClick={() => setShowColorPalette(!showColorPalette)}
                 />
               </div>
 
-              {showColorPalette && formData.styleType === "default" && (
+              {showColorPalette && (
                 <div className="p-3 bg-white/10 backdrop-blur-md border border-white/20 rounded-lg">
                   {/* Tab Buttons */}
                   <div className="flex gap-2 mb-3">
