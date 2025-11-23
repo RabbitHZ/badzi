@@ -19,7 +19,6 @@ interface BadgeFormData {
   url: string
   label: string
   color: string
-  fontSize: number
   styleType: StyleType
 }
 
@@ -71,7 +70,6 @@ export function GlassmorphicNav() {
     url: "",
     label: "Views",
     color: "#0d6efd",
-    fontSize: 12,
     styleType: "default",
   })
 
@@ -123,7 +121,6 @@ export function GlassmorphicNav() {
         url: formData.url,
         label: formData.label || "Views",
         color: formData.color.replace("#", ""),
-        fontSize: formData.fontSize.toString(),
         styleType: formData.styleType,
       }).toString()
 
@@ -287,20 +284,6 @@ export function GlassmorphicNav() {
                 value={formData.label}
                 onChange={handleInputChange}
                 placeholder="e.g., Total Visits"
-                className="w-full px-3 py-2 rounded-lg bg-white/10 border border-white/20 text-white placeholder-white/50 focus:outline-none focus:border-white/40 transition-all"
-              />
-            </div>
-
-            {/* Font Size Input */}
-            <div>
-              <label className="text-white/80 text-sm font-medium block mb-2">Font Size</label>
-              <input
-                type="number"
-                name="fontSize"
-                value={formData.fontSize}
-                onChange={handleInputChange}
-                min="8"
-                max="24"
                 className="w-full px-3 py-2 rounded-lg bg-white/10 border border-white/20 text-white placeholder-white/50 focus:outline-none focus:border-white/40 transition-all"
               />
             </div>
