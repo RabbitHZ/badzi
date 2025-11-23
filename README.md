@@ -17,7 +17,7 @@
 - **실시간 미리보기** - 커스터마이징하는 즉시 뱃지 변화를 확인
 - **커스텀 라벨** - 뱃지에 원하는 텍스트 추가
 - **색상 팔레트** - Pastel/Vivid 탭에서 40가지 색상 선택
-- **폰트 크기 조절** - 뱃지 텍스트 크기 조절 (8-24px)
+- **스타일 타입** - Default, Maple, Rabbit 스타일 선택
 - **다양한 내보내기 형식** - URL, Markdown, HTML로 복사
 - **글래스모피즘 UI** - 블러 효과가 적용된 모던한 디자인
 
@@ -58,8 +58,8 @@ npm run dev
 
 1. 트래킹할 URL 입력
 2. 라벨 커스터마이징 (기본값: "Views")
-3. Pastel 또는 Vivid 팔레트에서 색상 선택
-4. 필요시 폰트 크기 조절
+3. 스타일 타입 선택 (Default, Maple, Rabbit)
+4. Default 스타일인 경우 색상 선택
 5. 생성된 코드 복사 (URL, Markdown, HTML 중 선택)
 6. README, 블로그, 웹사이트에 붙여넣기
 
@@ -112,7 +112,7 @@ https://bazzi-server-464152216340.asia-northeast3.run.app
 | `url` | string | 트래킹할 URL |
 | `label` | string | 뱃지 라벨 텍스트 |
 | `color` | string | Hex 색상 코드 (# 제외) |
-| `fontSize` | number | 폰트 크기 (픽셀) |
+| `styleType` | string | 스타일 타입 (default, maple, rabbit) |
 
 ## 라이선스
 
