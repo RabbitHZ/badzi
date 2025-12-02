@@ -1,8 +1,8 @@
 <p align="center">
-  <img src="public/logo.svg" width="80" height="80" alt="Bazzi Logo" />
+  <img src="public/logo.svg" width="80" height="80" alt="Badzi Logo" />
 </p>
 
-<h1 align="center">Bazzi</h1>
+<h1 align="center">Badzi</h1>
 
 <p align="center">
   Decorate your GitHub Profile — Craft a badge that's uniquely you.
@@ -40,10 +40,10 @@
 
 ```bash
 # 저장소 클론
-git clone https://github.com/your-username/bazzi.git
+git clone https://github.com/your-username/badzi.git
 
 # 프로젝트 폴더로 이동
-cd bazzi
+cd badzi
 
 # 의존성 설치
 npm install
@@ -66,7 +66,7 @@ npm run dev
 ## 프로젝트 구조
 
 ```
-bazzi/
+badzi/
 ├── app/
 │   ├── globals.css
 │   ├── layout.tsx
@@ -92,10 +92,10 @@ bazzi/
 
 ## API
 
-이 프론트엔드는 Bazzi 백엔드 서버와 연동됩니다:
+이 프론트엔드는 Badzi 백엔드 서버와 연동됩니다:
 
 ```
-https://bazzi-server-464152216340.asia-northeast3.run.app
+https://badzi-server-464152216340.asia-northeast3.run.app
 ```
 
 ### 엔드포인트
@@ -113,7 +113,3 @@ https://bazzi-server-464152216340.asia-northeast3.run.app
 | `label` | string | 뱃지 라벨 텍스트 |
 | `color` | string | Hex 색상 코드 (# 제외) |
 | `styleType` | string | 스타일 타입 (default, maple, rabbit) |
-
-## 라이선스
-
-MIT
