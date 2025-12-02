@@ -10,7 +10,7 @@ export const metadata: Metadata = {
   title: 'Badzi - Badge Generator',
   description: 'Create custom badges for your GitHub projects',
   icons: {
-    icon: '/icon.svg',
+    icon: '/logo.svg',
   },
 }
 
