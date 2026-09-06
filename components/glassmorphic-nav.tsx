@@ -114,8 +114,8 @@ export function GlassmorphicNav() {
       }).toString()
 
       const endpoint = isPreview ? '/api/badges/preview' : '/api/badges'
-      const badgeUrl = `https://badzi-server-464152216340.asia-northeast3.run.app${endpoint}?${params}`
-      const finalBadgeUrl = `https://badzi-server-464152216340.asia-northeast3.run.app/api/badges?${params}`
+      const badgeUrl = `https://badzi-server-725452159926.europe-west1.run.app${endpoint}?${params}`
+      const finalBadgeUrl = `https://badzi-server-725452159926.europe-west1.run.app/api/badges?${params}`
       const htmlCode = `<img src="${finalBadgeUrl}" alt="${formData.label}" />`
       const markdownCode = `![${formData.label}](${finalBadgeUrl})`
 
