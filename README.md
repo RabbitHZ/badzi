@@ -23,7 +23,8 @@
 
 ## 기술 스택
 
-- **프레임워크**: Next.js 15
+- **프레임워크**: Next.js 15 (App Router)
+- **런타임**: React 19
 - **언어**: TypeScript
 - **스타일링**: Tailwind CSS
 - **UI 컴포넌트**: Radix UI
@@ -33,14 +34,14 @@
 
 ### 사전 요구사항
 
-- Node.js 18+
+- Node.js 20+
 - npm 또는 pnpm
 
 ### 설치
 
 ```bash
 # 저장소 클론
-git clone https://github.com/your-username/badzi.git
+git clone https://github.com/RabbitHZ/badzi.git
 
 # 프로젝트 폴더로 이동
 cd badzi
@@ -73,11 +74,11 @@ badzi/
 │   └── page.tsx
 ├── components/
 │   ├── glassmorphic-nav.tsx    # 메인 뱃지 생성기 컴포넌트
-│   └── ui/                      # 재사용 가능한 UI 컴포넌트
-├── public/
-│   └── images/
+│   ├── theme-provider.tsx      # 테마 컨텍스트 프로바이더
+│   └── ui/                     # 재사용 가능한 UI 컴포넌트
 ├── lib/
 │   └── utils.ts
+├── public/
 └── package.json
 ```
 
@@ -92,11 +93,7 @@ badzi/
 
 ## API
 
-이 프론트엔드는 Badzi 백엔드 서버와 연동됩니다:
-
-```
-https://badzi-server-464152216340.asia-northeast3.run.app
-```
+이 프론트엔드는 Badzi 백엔드 서버와 연동됩니다.
 
 ### 엔드포인트
 
