@@ -34,6 +34,14 @@ interface ImageLoadState {
   svgContent: string | null
 }
 
+interface ShowcaseBadge {
+  label: string
+  value: string
+  caption: string
+  accent: string
+  position: string
+}
+
 const PASTEL_COLORS = [
   "#a5d8ff", "#74c0fc", "#99e9f2", "#66d9e8",
   "#b2f2bb", "#8ce99a", "#96f2d7", "#63e6be",
@@ -50,6 +58,14 @@ const VIVID_COLORS = [
   "#f97316", "#f59e0b", "#eab308", "#000000",
 ]
 
+const SHOWCASE_BADGES: ShowcaseBadge[] = [
+  { label: "profile", value: "ready", caption: "README badge", accent: "#9b8cff", position: "top-left" },
+  { label: "visits", value: "1.2k", caption: "Live counter", accent: "#5bc6ff", position: "top-right" },
+  { label: "made with", value: "Badzi", caption: "Your own style", accent: "#f59dcb", position: "center" },
+  { label: "open source", value: "git", caption: "Project link", accent: "#9fe5a7", position: "bottom-left" },
+  { label: "today", value: "+42", caption: "A little momentum", accent: "#ffc46b", position: "bottom-right" },
+]
+
 function copyToClipboard(text: string, label: string) {
   navigator.clipboard
     .writeText(text)
@@ -59,6 +75,71 @@ function copyToClipboard(text: string, label: string) {
     .catch((err) => {
       console.error("Could not copy text: ", err)
     })
+}
+
+function BadgeOrbitPreview() {
+  // Only render the absolutely-positioned cards after mount. Before hydration
+  // the styled-jsx rules aren't applied yet, so the cards would briefly stack
+  // in the top-left corner and then snap into place. Gating on `mounted`
+  // guarantees the broken pre-style state is never shown.
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+
+  const handlePointerMove = (event: React.PointerEvent<HTMLDivElement>) => {
+    const bounds = event.currentTarget.getBoundingClientRect()
+    const x = (event.clientX - bounds.left) / bounds.width - 0.5
+    const y = (event.clientY - bounds.top) / bounds.height - 0.5
+
+    event.currentTarget.style.setProperty("--pointer-rotate-x", `${-y * 9}deg`)
+    event.currentTarget.style.setProperty("--pointer-rotate-y", `${x * 12}deg`)
+    event.currentTarget.style.setProperty("--glow-x", `${(x + 0.5) * 100}%`)
+    event.currentTarget.style.setProperty("--glow-y", `${(y + 0.5) * 100}%`)
+  }
+
+  const resetPointer = (event: React.PointerEvent<HTMLDivElement>) => {
+    event.currentTarget.style.setProperty("--pointer-rotate-x", "0deg")
+    event.currentTarget.style.setProperty("--pointer-rotate-y", "0deg")
+    event.currentTarget.style.setProperty("--glow-x", "50%")
+    event.currentTarget.style.setProperty("--glow-y", "50%")
+  }
+
+  return (
+    <div
+      className="badge-orbit"
+      onPointerMove={handlePointerMove}
+      onPointerLeave={resetPointer}
+      aria-label="Interactive badge examples. Add a URL to create your own badge."
+    >
+      <div className="badge-orbit__heading">
+        <span className="badge-orbit__eyebrow">A profile, in motion</span>
+        <h2>Make your README feel lived in.</h2>
+        <p>Move your cursor through the badges, then add a URL to make one yours.</p>
+      </div>
+
+      {mounted && (
+        <div className="badge-orbit__constellation" aria-hidden="true">
+          {SHOWCASE_BADGES.map((badge) => (
+            <div className={`orbit-card orbit-card--${badge.position}`} key={badge.label}>
+              <div className="orbit-card__badge">
+                <span style={{ backgroundColor: badge.accent }}>{badge.label}</span>
+                <strong>{badge.value}</strong>
+              </div>
+              <span className="orbit-card__caption">{badge.caption}</span>
+            </div>
+          ))}
+        </div>
+      )}
+
+      <div className="badge-orbit__guide" aria-hidden="true">
+        <span />
+        <span />
+        <span />
+      </div>
+    </div>
+  )
 }
 
 export function GlassmorphicNav() {
@@ -213,17 +294,18 @@ export function GlassmorphicNav() {
   }
 
   return (
-    <div className="relative w-full max-w-7xl mx-auto px-4">
-      <div className="mb-10 text-center">
-        <div className="flex items-center justify-center gap-3 mb-3">
+    <div className="relative w-full max-w-7xl mx-auto px-4 py-8 sm:py-12">
+      <div className="mb-8 sm:mb-10 text-center">
+        <div className="flex items-center justify-center gap-3 sm:gap-4 mb-4">
           <svg
             width="44"
             height="44"
             viewBox="0 0 44 44"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
+            className="w-14 h-14 sm:w-16 sm:h-16"
           >
-            <rect width="44" height="44" rx="10" fill="white" fillOpacity="0.9" />
+            <rect width="44" height="44" rx="10" fill="white" fillOpacity="0.95" />
             <text
               x="22"
               y="29"
@@ -236,18 +318,18 @@ export function GlassmorphicNav() {
               B
             </text>
           </svg>
-          <h1 className="text-4xl font-semibold text-white tracking-tight">
+          <h1 className="text-5xl sm:text-6xl font-bold text-white tracking-tight">
             Badzi
           </h1>
         </div>
-        <p className="text-white/50 text-sm">
+        <p className="text-white/80 text-lg sm:text-xl font-medium px-4">
           Decorate your GitHub Profile — Craft a badge that's uniquely you.
         </p>
       </div>
 
-      <div className="flex gap-8 items-stretch justify-center">
+      <div className="flex flex-col lg:flex-row gap-6 lg:gap-8 items-center lg:items-stretch justify-center">
         {/* LEFT BOX: Create Your Badge Form */}
-        <div className="w-96 p-6 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 shadow-xl">
+        <div className="w-full max-w-md lg:w-96 p-5 sm:p-6 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 shadow-xl">
           <h2 className="text-white font-bold text-xl mb-6">Create Your Badge</h2>
 
           <div className="space-y-4">
@@ -366,7 +448,7 @@ export function GlassmorphicNav() {
 
         {/* RIGHT BOX: Result Display with Badge Preview */}
         {resultData ? (
-          <div className="w-96 p-6 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 shadow-xl max-h-[700px] overflow-y-auto">
+          <div className="w-full max-w-md lg:w-96 p-5 sm:p-6 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 shadow-xl lg:max-h-[700px] lg:overflow-y-auto">
             <div className="mb-6">
               <div className="flex items-center justify-between mb-4">
                 <h2 className="text-white font-bold text-xl">Result</h2>
@@ -457,8 +539,8 @@ export function GlassmorphicNav() {
             </div>
           </div>
         ) : (
-          <div className="w-96 p-6 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 shadow-xl flex items-center justify-center min-h-96">
-            <p className="text-white/60 text-center text-sm">Enter a URL to see the badge preview here</p>
+          <div className="w-full max-w-md lg:w-96 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 shadow-xl min-h-96 overflow-hidden">
+            <BadgeOrbitPreview />
           </div>
         )}
       </div>
@@ -509,7 +591,7 @@ export function GlassmorphicNav() {
         </div>
       )}
 
-      <style jsx>{`
+      <style jsx global>{`
         @keyframes slideInUp {
           0% {
             opacity: 0;
@@ -542,6 +624,256 @@ export function GlassmorphicNav() {
           }
           100% {
             width: 0%;
+          }
+        }
+
+        .badge-orbit {
+          --pointer-rotate-x: 0deg;
+          --pointer-rotate-y: 0deg;
+          --glow-x: 50%;
+          --glow-y: 50%;
+          position: relative;
+          isolation: isolate;
+          min-height: 384px;
+          height: 100%;
+          overflow: hidden;
+          cursor: crosshair;
+          background:
+            radial-gradient(circle at var(--glow-x) var(--glow-y), rgba(255, 255, 255, 0.24), transparent 37%),
+            linear-gradient(145deg, rgba(255, 255, 255, 0.1), rgba(76, 65, 174, 0.1));
+          transition: background 180ms ease-out;
+        }
+
+        /* Fade the whole scene in once styles/layout are ready, so cards
+           don't flash from their un-positioned state on first paint. */
+        .badge-orbit__constellation {
+          opacity: 0;
+          animation: orbitReveal 420ms ease-out 60ms forwards;
+        }
+
+        @keyframes orbitReveal {
+          from { opacity: 0; }
+          to { opacity: 1; }
+        }
+
+        .badge-orbit::before {
+          position: absolute;
+          inset: 86px -58px -106px;
+          z-index: -1;
+          border: 1px solid rgba(255, 255, 255, 0.22);
+          border-radius: 50%;
+          box-shadow:
+            0 0 0 54px rgba(255, 255, 255, 0.035),
+            0 0 0 108px rgba(255, 255, 255, 0.02);
+          content: "";
+        }
+
+        .badge-orbit__heading {
+          position: relative;
+          z-index: 2;
+          padding: 24px 24px 0;
+          text-align: left;
+          pointer-events: none;
+        }
+
+        .badge-orbit__eyebrow {
+          display: block;
+          margin-bottom: 7px;
+          color: rgba(255, 255, 255, 0.62);
+          font-size: 11px;
+          font-weight: 600;
+          letter-spacing: 0.01em;
+        }
+
+        .badge-orbit__heading h2 {
+          max-width: 250px;
+          margin: 0;
+          color: white;
+          font-size: 22px;
+          font-weight: 650;
+          letter-spacing: -0.04em;
+          line-height: 1.1;
+        }
+
+        .badge-orbit__heading p {
+          max-width: 245px;
+          margin: 9px 0 0;
+          color: rgba(255, 255, 255, 0.62);
+          font-size: 12px;
+          line-height: 1.45;
+        }
+
+        .badge-orbit__constellation {
+          position: absolute;
+          inset: 0;
+          transform: perspective(680px) rotateX(var(--pointer-rotate-x)) rotateY(var(--pointer-rotate-y));
+          transform-style: preserve-3d;
+          transition: transform 240ms cubic-bezier(0.22, 1, 0.36, 1);
+          will-change: transform;
+        }
+
+        .orbit-card {
+          position: absolute;
+          display: flex;
+          flex-direction: column;
+          gap: 7px;
+          width: 146px;
+          padding: 11px;
+          border: 1px solid rgba(255, 255, 255, 0.52);
+          border-radius: 14px;
+          background: linear-gradient(135deg, rgba(255, 255, 255, 0.94), rgba(255, 255, 255, 0.7));
+          box-shadow: 0 14px 28px rgba(24, 17, 76, 0.2), 0 2px 7px rgba(24, 17, 76, 0.1);
+          color: #29224a;
+          pointer-events: none;
+          transform-style: preserve-3d;
+          will-change: transform;
+          animation-fill-mode: both;
+        }
+
+        .orbit-card__badge {
+          display: flex;
+          width: max-content;
+          max-width: 100%;
+          overflow: hidden;
+          border-radius: 7px;
+          box-shadow: 0 2px 5px rgba(35, 27, 86, 0.14);
+          font-size: 11px;
+          line-height: 1;
+        }
+
+        .orbit-card__badge span,
+        .orbit-card__badge strong {
+          overflow: hidden;
+          padding: 6px 7px;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
+
+        .orbit-card__badge span {
+          color: #161326;
+          font-weight: 600;
+        }
+
+        .orbit-card__badge strong {
+          background: #29224a;
+          color: white;
+          font-weight: 650;
+        }
+
+        .orbit-card__caption {
+          color: rgba(41, 34, 74, 0.62);
+          font-size: 10px;
+          font-weight: 550;
+        }
+
+        .orbit-card--top-left {
+          top: 132px;
+          left: -34px;
+          width: 210px;
+          padding: 16px;
+          gap: 9px;
+          transform: rotate(-10deg) translateZ(42px);
+          animation: driftTopLeft 7s ease-in-out infinite;
+        }
+
+        .orbit-card--top-right {
+          top: 92px;
+          right: -42px;
+          width: 210px;
+          padding: 16px;
+          gap: 9px;
+          transform: rotate(8deg) translateZ(30px);
+          animation: driftTopRight 8s ease-in-out -2s infinite;
+        }
+
+        /* Larger type for the two enlarged top cards */
+        .orbit-card--top-left .orbit-card__badge,
+        .orbit-card--top-right .orbit-card__badge {
+          font-size: 15px;
+        }
+
+        .orbit-card--top-left .orbit-card__caption,
+        .orbit-card--top-right .orbit-card__caption {
+          font-size: 12px;
+        }
+
+        .orbit-card--center {
+          top: 213px;
+          left: 116px;
+          z-index: 1;
+          transform: rotate(-3deg) translateZ(78px);
+          animation: driftCenter 6.5s ease-in-out -1.5s infinite;
+        }
+
+        .orbit-card--bottom-left {
+          bottom: -20px;
+          left: 4px;
+          transform: rotate(8deg) translateZ(23px);
+          animation: driftBottomLeft 7.5s ease-in-out -3s infinite;
+        }
+
+        .orbit-card--bottom-right {
+          right: -23px;
+          bottom: 1px;
+          transform: rotate(-8deg) translateZ(46px);
+          animation: driftBottomRight 8s ease-in-out -0.5s infinite;
+        }
+
+        .badge-orbit__guide {
+          position: absolute;
+          right: 23px;
+          top: 24px;
+          display: flex;
+          gap: 4px;
+          pointer-events: none;
+        }
+
+        .badge-orbit__guide span {
+          width: 4px;
+          height: 4px;
+          border-radius: 999px;
+          background: rgba(255, 255, 255, 0.72);
+        }
+
+        @keyframes driftTopLeft {
+          0%, 100% { transform: rotate(-10deg) translate3d(0, 0, 42px); }
+          50% { transform: rotate(-5deg) translate3d(9px, -11px, 54px); }
+        }
+
+        @keyframes driftTopRight {
+          0%, 100% { transform: rotate(8deg) translate3d(0, 0, 30px); }
+          50% { transform: rotate(2deg) translate3d(-10px, 12px, 49px); }
+        }
+
+        @keyframes driftCenter {
+          0%, 100% { transform: rotate(-3deg) translate3d(0, 0, 78px); }
+          50% { transform: rotate(3deg) translate3d(-4px, -14px, 96px); }
+        }
+
+        @keyframes driftBottomLeft {
+          0%, 100% { transform: rotate(8deg) translate3d(0, 0, 23px); }
+          50% { transform: rotate(3deg) translate3d(12px, -12px, 39px); }
+        }
+
+        @keyframes driftBottomRight {
+          0%, 100% { transform: rotate(-8deg) translate3d(0, 0, 46px); }
+          50% { transform: rotate(-3deg) translate3d(-9px, -12px, 62px); }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+          .badge-orbit__constellation,
+          .orbit-card {
+            animation: none;
+            transition: none;
+          }
+          .badge-orbit__constellation {
+            opacity: 1;
+          }
+        }
+
+        @media (max-width: 840px) {
+          .badge-orbit {
+            min-height: 352px;
           }
         }
       `}</style>
