@@ -433,12 +433,33 @@ html[lang="ko"] .badzi h1 {
 }
 
 /* ===================== Result ===================== */
+.badzi .swatch-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.badzi .preview {
+  display: flex;
+  align-items: center;
+  flex: none;
+  height: 40px;
+  padding: 0 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface);
+}
+.badzi .preview-badge {
+  height: 22px;
+  display: block;
+}
+
 .badzi .result {
-  margin-top: 26px;
+  margin-top: 16px;
   display: flex;
   align-items: center;
   flex-wrap: wrap;
   gap: 12px;
+  max-width: 540px;
 }
 .badzi .snippet {
   display: flex;
@@ -447,16 +468,17 @@ html[lang="ko"] .badzi h1 {
   border: 1px dashed var(--line);
   border-radius: 8px;
   padding: 8px 10px 8px 12px;
-  max-width: 100%;
+  width: 100%;
 }
 .badzi .snippet code {
+  flex: 1;
+  min-width: 0;
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
   font-size: 12px;
   color: var(--muted);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 330px;
 }
 .badzi .snippet.locked code {
   color: #6e7681;
@@ -545,12 +567,39 @@ html[lang="ko"] .badzi h1 {
   line-height: 1.6;
   font-size: 13.5px;
 }
+.badzi .readme .tagline {
+  margin: 6px 0 0;
+  color: var(--gh-muted);
+  font-size: 13px;
+  font-style: italic;
+}
+.badzi .readme ul {
+  margin: 10px 0 0;
+  padding-left: 20px;
+  list-style: disc;
+  color: var(--gh-muted);
+  font-size: 13.5px;
+  line-height: 1.7;
+}
+.badzi .readme li {
+  margin: 0;
+  list-style: inherit;
+}
 .badzi .readme .badges {
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
   margin: 16px 0 0;
   align-items: center;
+}
+.badzi .readme .badges > span {
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+}
+.badzi .readme .live-badge {
+  height: 20px;
+  display: block;
 }
 .badzi .readme h3 {
   margin: 22px 0 0;
@@ -566,6 +615,8 @@ html[lang="ko"] .badzi h1 {
   font-size: 12.5px;
   color: var(--gh-text);
   overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 .badzi .readme .cap {
   margin: 14px 0 0;
@@ -582,26 +633,6 @@ html[lang="ko"] .badzi h1 {
   background: var(--gh-link);
   display: inline-block;
   flex: none;
-}
-
-/* ===================== Language switch ===================== */
-.badzi .proto {
-  position: fixed;
-  left: 20px;
-  bottom: 18px;
-  z-index: 5;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  background: rgba(13, 17, 23, 0.86);
-  backdrop-filter: blur(6px);
-  border: 1px solid var(--line);
-  border-radius: 9px;
-  padding: 6px;
-}
-.badzi .proto .seg button {
-  font-size: 12px;
-  padding: 6px 10px;
 }
 
 .badzi :focus-visible {
@@ -636,10 +667,6 @@ html[lang="ko"] .badzi h1 {
   }
   .badzi .snippet code {
     max-width: 160px;
-  }
-  .badzi .proto {
-    left: 12px;
-    bottom: 12px;
   }
 }
 @media (prefers-reduced-motion: reduce) {
