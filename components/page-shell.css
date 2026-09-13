@@ -1,0 +1,112 @@
+/* Shared layout for nav pages. Relies on .badzi design tokens from
+   badzi-landing.css (canvas, surface, line, text, muted). */
+
+.badzi .page {
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  padding: 26px 40px 80px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.badzi .page-main {
+  flex: 1;
+  margin-top: 48px;
+}
+
+.badzi .page-head {
+  margin-bottom: 36px;
+}
+.badzi .page-title {
+  margin: 0;
+  font-size: clamp(30px, 4vw, 44px);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+}
+.badzi .page-intro {
+  margin: 12px 0 0;
+  color: var(--muted);
+  font-size: 17px;
+  line-height: 1.55;
+  max-width: 620px;
+}
+
+/* Card grid used by Styles / Shop / Pricing */
+.badzi .card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 18px;
+}
+.badzi .card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 20px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--surface);
+}
+.badzi .card h3 {
+  margin: 0;
+  font-size: 17px;
+  font-weight: 700;
+}
+.badzi .card p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.5;
+}
+.badzi .card .price {
+  font-size: 20px;
+  font-weight: 800;
+}
+.badzi .card .card-badge {
+  display: flex;
+  align-items: center;
+  min-height: 40px;
+}
+
+/* Primary/secondary buttons */
+.badzi .btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 11px 18px;
+  border-radius: 8px;
+  border: 1px solid var(--line-strong);
+  background: transparent;
+  color: var(--text);
+  font-family: inherit;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  text-decoration: none;
+}
+.badzi .btn:hover {
+  border-color: var(--muted);
+  background: var(--surface);
+}
+.badzi .btn-primary {
+  background: var(--text);
+  color: var(--canvas);
+  border-color: var(--text);
+}
+.badzi .btn-primary:hover {
+  background: #fff;
+}
+
+/* States */
+.badzi .state {
+  color: var(--muted);
+  font-size: 15px;
+  padding: 40px 0;
+}
+
+@media (max-width: 900px) {
+  .badzi .page {
+    padding: 18px 20px 60px;
+  }
+}
