@@ -43,3 +43,6 @@ next-env.d.ts
 
 # pnpm (using npm instead)
 pnpm-lock.yaml
+
+# Local working docs (requirements, plan) — root only, not app/docs
+/docs/

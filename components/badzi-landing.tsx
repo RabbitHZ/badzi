@@ -1,7 +1,13 @@
 "use client"
 
+import Link from "next/link"
 import { useState, useEffect, useMemo, useCallback } from "react"
+import { API_BASE } from "@/lib/api"
 import "./badzi-landing.css"
+
+// nav labels are localized in I18N; these hrefs map to them positionally
+// (Styles / Shop / Pricing / Docs).
+const NAV_HREFS = ["/styles", "/shop", "/pricing", "/docs"]
 
 /* ===================== Types & Data ===================== */
 
@@ -208,7 +214,8 @@ function LockIcon() {
 
 // Live badge service. The frontend sends url/label/color(hex)/styleType;
 // shape (split/pill) is a UI-only concept the server doesn't consume.
-const BADGE_API = "https://api.badzi.app"
+// API_BASE is env-driven (NEXT_PUBLIC_API_BASE), shared with lib/api.ts.
+const BADGE_API = API_BASE
 
 // The server wants a bare 6-digit hex. Palettes may hold a gradient in `bg`,
 // so prefer `solid` and strip the leading '#'.
@@ -344,11 +351,15 @@ export function BadziLanding() {
     setPicked(-1)
   }
 
+  // Clicking a scattered badge means "use this one": fill the editor with its
+  // label/color and reveal the result so the preview + markdown show at once.
   const pickChip = (n: number) => {
     const b = SCATTER[n]
     setPicked(n)
     setLabelVal(t.words[b.i])
     setCurrent(palette[b.c % palette.length])
+    if (!urlVal.trim()) setUrlVal("username")
+    setGenerated(true)
   }
 
   const pickSwatch = (p: Palette) => {
@@ -388,14 +399,14 @@ export function BadziLanding() {
             <i>B</i>Badzi
           </div>
           <nav>
-            {t.nav.map((n) => (
-              <a href="#" key={n}>
+            {t.nav.map((n, i) => (
+              <Link href={NAV_HREFS[i]} key={n}>
                 {n}
-              </a>
+              </Link>
             ))}
-            <a href="#" className="signin">
+            <Link href="/signin" className="signin">
               {t.signin}
-            </a>
+            </Link>
           </nav>
         </header>
 
