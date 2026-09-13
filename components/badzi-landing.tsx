@@ -208,7 +208,7 @@ function LockIcon() {
 
 // Live badge service. The frontend sends url/label/color(hex)/styleType;
 // shape (split/pill) is a UI-only concept the server doesn't consume.
-const BADGE_API = "https://badzi-server-725452159926.europe-west1.run.app"
+const BADGE_API = "https://api.badzi.app"
 
 // The server wants a bare 6-digit hex. Palettes may hold a gradient in `bg`,
 // so prefer `solid` and strip the leading '#'.
