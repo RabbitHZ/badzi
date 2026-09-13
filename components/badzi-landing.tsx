@@ -351,11 +351,15 @@ export function BadziLanding() {
     setPicked(-1)
   }
 
+  // Clicking a scattered badge means "use this one": fill the editor with its
+  // label/color and reveal the result so the preview + markdown show at once.
   const pickChip = (n: number) => {
     const b = SCATTER[n]
     setPicked(n)
     setLabelVal(t.words[b.i])
     setCurrent(palette[b.c % palette.length])
+    if (!urlVal.trim()) setUrlVal("username")
+    setGenerated(true)
   }
 
   const pickSwatch = (p: Palette) => {
