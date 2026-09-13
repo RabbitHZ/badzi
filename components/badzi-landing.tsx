@@ -1,7 +1,12 @@
 "use client"
 
+import Link from "next/link"
 import { useState, useEffect, useMemo, useCallback } from "react"
 import "./badzi-landing.css"
+
+// nav labels are localized in I18N; these hrefs map to them positionally
+// (Styles / Shop / Pricing / Docs).
+const NAV_HREFS = ["/styles", "/shop", "/pricing", "/docs"]
 
 /* ===================== Types & Data ===================== */
 
@@ -388,14 +393,14 @@ export function BadziLanding() {
             <i>B</i>Badzi
           </div>
           <nav>
-            {t.nav.map((n) => (
-              <a href="#" key={n}>
+            {t.nav.map((n, i) => (
+              <Link href={NAV_HREFS[i]} key={n}>
                 {n}
-              </a>
+              </Link>
             ))}
-            <a href="#" className="signin">
+            <Link href="/signin" className="signin">
               {t.signin}
-            </a>
+            </Link>
           </nav>
         </header>
 
