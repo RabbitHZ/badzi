@@ -2,6 +2,7 @@
 
 import Link from "next/link"
 import { useState, useEffect, useMemo, useCallback } from "react"
+import { API_BASE } from "@/lib/api"
 import "./badzi-landing.css"
 
 // nav labels are localized in I18N; these hrefs map to them positionally
@@ -213,7 +214,8 @@ function LockIcon() {
 
 // Live badge service. The frontend sends url/label/color(hex)/styleType;
 // shape (split/pill) is a UI-only concept the server doesn't consume.
-const BADGE_API = "https://api.badzi.app"
+// API_BASE is env-driven (NEXT_PUBLIC_API_BASE), shared with lib/api.ts.
+const BADGE_API = API_BASE
 
 // The server wants a bare 6-digit hex. Palettes may hold a gradient in `bg`,
 // so prefer `solid` and strip the leading '#'.
