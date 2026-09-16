@@ -46,3 +46,8 @@ pnpm-lock.yaml
 
 # Local working docs (requirements, plan) — root only, not app/docs
 /docs/
+
+# Local Claude Code harness / tooling
+/.claude/
+/.omc/
+/.playwright-mcp/
