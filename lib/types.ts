@@ -59,6 +59,7 @@ export interface UserProfile {
   username: string
   email: string
   name: string
+  profileImageUrl: string | null
 }
 
 export interface UserItem {

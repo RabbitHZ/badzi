@@ -214,7 +214,8 @@
   pointer-events: none;
 }
 .badzi .mark,
-.badzi nav {
+.badzi nav,
+.badzi .topbar-hamburger {
   pointer-events: auto;
 }
 
@@ -264,6 +265,80 @@
 .badzi nav a.signin:hover {
   background: var(--surface);
   border-color: var(--muted);
+}
+.badzi nav a.signin-profile {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px 6px 8px;
+}
+.badzi .profile-avatar {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+/* Hamburger button — hidden on desktop */
+.badzi .topbar-hamburger {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: 1px solid var(--line-strong);
+  border-radius: 8px;
+  background: transparent;
+  cursor: pointer;
+}
+.badzi .topbar-hamburger span {
+  display: block;
+  width: 18px;
+  height: 2px;
+  background: var(--text);
+  border-radius: 2px;
+}
+
+/* Mobile nav dropdown */
+.badzi .topbar-nav-mobile {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 180px;
+  padding: 8px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+}
+.badzi .topbar-nav-mobile a {
+  color: var(--muted);
+  text-decoration: none;
+  font-size: 16px;
+  font-weight: 700;
+  padding: 10px 14px;
+  border-radius: 7px;
+}
+.badzi .topbar-nav-mobile a:hover {
+  color: var(--text);
+  background: var(--line);
+}
+.badzi .topbar-nav-mobile a.signin {
+  color: var(--text);
+  border: 1px solid var(--line-strong);
+  margin-top: 4px;
+}
+.badzi .topbar-nav-desktop {
+  display: flex;
+  align-items: center;
+  gap: 2px;
 }
 
 .badzi .stage {
@@ -656,9 +731,6 @@ html[lang="ko"] .badzi h1 {
   .badzi .hero {
     padding: 18px 20px 40px;
   }
-  .badzi nav a:not(.signin) {
-    display: none;
-  }
   .badzi .chip.sm-hide {
     display: none;
   }
@@ -667,6 +739,12 @@ html[lang="ko"] .badzi h1 {
   }
   .badzi .snippet code {
     max-width: 160px;
+  }
+  .badzi .topbar-nav-desktop {
+    display: none;
+  }
+  .badzi .topbar-hamburger {
+    display: flex;
   }
 }
 @media (prefers-reduced-motion: reduce) {

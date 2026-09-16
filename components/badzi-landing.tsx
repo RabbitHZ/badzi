@@ -3,6 +3,7 @@
 import Link from "next/link"
 import { useState, useEffect, useMemo, useCallback } from "react"
 import { API_BASE } from "@/lib/api"
+import { useAuth } from "@/contexts/auth-context"
 import "./badzi-landing.css"
 
 // nav labels are localized in I18N; these hrefs map to them positionally
@@ -271,6 +272,7 @@ function badgeHTML(k: string, v: string, p: Palette, shape: Shape, opt: BadgeOpt
 /* ===================== Component ===================== */
 
 export function BadziLanding() {
+  const { user, loading } = useAuth()
   // Language is fixed to English for now (the switcher was removed);
   // the i18n tables are kept so it can be re-enabled later.
   const lang: Lang = "en"
@@ -404,9 +406,23 @@ export function BadziLanding() {
                 {n}
               </Link>
             ))}
-            <Link href="/signin" className="signin">
-              {t.signin}
-            </Link>
+            {!loading && user ? (
+              <Link href="/profile" className="signin signin-profile">
+                {user.profileImageUrl ? (
+                  <img
+                    src={user.profileImageUrl}
+                    alt=""
+                    className="profile-avatar"
+                    referrerPolicy="no-referrer"
+                  />
+                ) : null}
+                {user.name || user.username}
+              </Link>
+            ) : (
+              <Link href="/signin" className="signin">
+                {t.signin}
+              </Link>
+            )}
           </nav>
         </header>
 
