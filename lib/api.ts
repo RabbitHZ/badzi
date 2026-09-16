@@ -17,13 +17,26 @@ export class ApiError extends Error {
 }
 
 interface RequestOptions extends RequestInit {
-  // Attach the bearer token when auth is wired up later.
   token?: string
+  // Skip automatic token refresh (used internally to avoid loops).
+  _skipRefresh?: boolean
+}
+
+async function unwrap<T>(res: Response, path: string): Promise<T> {
+  if (!res.ok) {
+    throw new ApiError(res.status, `Request failed: ${res.status} ${path}`)
+  }
+  const body = (await res.json()) as ApiResponse<T> | T
+  if (body && typeof body === "object" && "data" in (body as ApiResponse<T>)) {
+    return (body as ApiResponse<T>).data
+  }
+  return body as T
 }
 
 // Fetch a JSON endpoint and unwrap the ApiResponse<T> envelope.
+// On 401, attempts one token refresh then retries automatically.
 export async function apiGet<T>(path: string, opts: RequestOptions = {}): Promise<T> {
-  const { token, headers, ...rest } = opts
+  const { token, _skipRefresh, headers, ...rest } = opts
   const res = await fetch(`${API_BASE}${path}`, {
     ...rest,
     headers: {
@@ -34,16 +47,47 @@ export async function apiGet<T>(path: string, opts: RequestOptions = {}): Promis
     cache: "no-store",
   })
 
-  if (!res.ok) {
-    throw new ApiError(res.status, `Request failed: ${res.status} ${path}`)
+  if (res.status === 401 && !_skipRefresh && typeof window !== "undefined") {
+    const { refreshTokens } = await import("./auth")
+    const newToken = await refreshTokens()
+    if (newToken) {
+      return apiGet<T>(path, { ...opts, token: newToken, _skipRefresh: true })
+    }
   }
 
-  const body = (await res.json()) as ApiResponse<T> | T
-  // Some endpoints return the envelope, some may return raw data.
-  if (body && typeof body === "object" && "data" in (body as ApiResponse<T>)) {
-    return (body as ApiResponse<T>).data
+  return unwrap<T>(res, path)
+}
+
+// POST/PUT/DELETE with JSON body. Supports the same 401 auto-refresh.
+export async function apiMutate<T>(
+  method: "POST" | "PUT" | "DELETE",
+  path: string,
+  body?: unknown,
+  opts: RequestOptions = {}
+): Promise<T> {
+  const { token, _skipRefresh, headers, ...rest } = opts
+  const res = await fetch(`${API_BASE}${path}`, {
+    ...rest,
+    method,
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      ...headers,
+    },
+    ...(body !== undefined ? { body: JSON.stringify(body) } : {}),
+    cache: "no-store",
+  })
+
+  if (res.status === 401 && !_skipRefresh && typeof window !== "undefined") {
+    const { refreshTokens } = await import("./auth")
+    const newToken = await refreshTokens()
+    if (newToken) {
+      return apiMutate<T>(method, path, body, { ...opts, token: newToken, _skipRefresh: true })
+    }
   }
-  return body as T
+
+  return unwrap<T>(res, path)
 }
 
 // Build a full badge image URL (the badge server keeps the /api prefix).
