@@ -24,7 +24,7 @@ export default async function ShopItemPage({
   if (!item) notFound()
 
   return (
-    <PageShell title={item.name} intro={item.description}>
+    <PageShell title={item.name} intro={item.description} headLang="ko">
       <ShopDetailActions item={item} />
     </PageShell>
   )

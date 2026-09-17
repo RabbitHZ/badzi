@@ -6,7 +6,7 @@
   display: flex;
   flex-direction: column;
   padding: 26px 40px 80px;
-  max-width: 1200px;
+  max-width: 1400px;
   margin: 0 auto;
 }
 
@@ -62,10 +62,49 @@
   font-size: 20px;
   font-weight: 800;
 }
+.badzi .card .sale-price {
+  display: flex;
+  align-items: baseline;
+  gap: 9px;
+}
+.badzi .card .sale-price del {
+  color: var(--muted);
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration-thickness: 1px;
+}
+.badzi .card .sale-price strong {
+  color: var(--text);
+  font: inherit;
+}
 .badzi .card .card-badge {
   display: flex;
   align-items: center;
   min-height: 40px;
+}
+.badzi .shop-badge-preview {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 42px;
+  padding: 12px 0;
+  isolation: isolate;
+}
+.badzi .shop-badge-preview::before {
+  position: absolute;
+  z-index: -1;
+  width: 72%;
+  height: 80%;
+  border-radius: 50%;
+  background: rgba(74, 72, 216, .22);
+  filter: blur(18px);
+  content: "";
+}
+.badzi .shop-badge-preview img {
+  display: block;
+  max-width: 100%;
+  height: auto;
 }
 
 /* Primary/secondary buttons */
