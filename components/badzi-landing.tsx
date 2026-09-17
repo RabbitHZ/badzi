@@ -74,6 +74,13 @@ interface Strings {
   shapes: Record<Shape, string>
   types: Record<StyleType["id"], string>
   nav: string[]
+  menuOpen: string
+  menuClose: string
+  urlLabel: string
+  urlRequired: string
+  urlInvalid: string
+  color: string
+  resultHint: string
   signin: string
   useBadge: string
   readmeCap: string
@@ -102,6 +109,13 @@ const I18N: Record<Lang, Strings> = {
     shapes: { split: "Split", pill: "Pill" },
     types: { basic: "Default", maple: "Maple", rabbit: "Rabbit" },
     nav: ["Styles", "Shop", "Pricing", "Docs"],
+    menuOpen: "Open menu",
+    menuClose: "Close menu",
+    urlLabel: "GitHub profile or repository URL",
+    urlRequired: "Enter your GitHub URL first.",
+    urlInvalid: "Enter a GitHub profile or repository URL, for example github.com/octocat/Hello-World.",
+    color: "Color",
+    resultHint: "Your preview and ready-to-copy Markdown will appear here.",
     signin: "Sign in",
     useBadge: "Use this badge",
     readmeCap: "This badge updates on every view.",
@@ -133,6 +147,13 @@ const I18N: Record<Lang, Strings> = {
     shapes: { split: "분할형", pill: "알약형" },
     types: { basic: "기본", maple: "메이플", rabbit: "래빗" },
     nav: ["스타일", "상점", "요금제", "문서"],
+    menuOpen: "메뉴 열기",
+    menuClose: "메뉴 닫기",
+    urlLabel: "GitHub 프로필 또는 저장소 URL",
+    urlRequired: "GitHub URL을 먼저 입력해 주세요.",
+    urlInvalid: "github.com/octocat/Hello-World와 같은 GitHub 프로필 또는 저장소 URL을 입력해 주세요.",
+    color: "색상",
+    resultHint: "여기에 미리보기와 바로 복사할 수 있는 마크다운이 표시됩니다.",
     signin: "로그인",
     useBadge: "이 뱃지 사용하기",
     readmeCap: "이 뱃지는 조회될 때마다 갱신됩니다.",
@@ -163,13 +184,14 @@ interface ScatterItem {
 }
 
 // Two-column layout, so the center stays empty. Only top/bottom bands + edges.
-// Top band (y ≲ 14%) is kept clear behind the logo (left) and nav (right)
-// so header text never sits on top of a scattered badge.
+// Top band (y ≲ 16%) sits behind the logo (left) and nav (right). There is no
+// room for it once the header collapses to a hamburger, so every chip in that
+// band carries `sm` and is dropped by .sm-hide below 900px.
 const SCATTER: ScatterItem[] = [
-  { i: 0, v: "1.2k", c: 0, x: "27%", y: "16%", r: "-7deg", fd: 11, fdl: -2 },
-  { i: 3, v: "passing", c: 1, x: "37%", y: "5%", r: "4deg", fd: 9, fdl: -5 },
+  { i: 0, v: "1.2k", c: 0, x: "27%", y: "16%", r: "-7deg", fd: 11, fdl: -2, sm: true },
+  { i: 3, v: "passing", c: 1, x: "37%", y: "5%", r: "4deg", fd: 9, fdl: -5, sm: true },
   { i: 2, v: "482", c: 2, x: "50%", y: "13%", r: "-3deg", fd: 13, fdl: -1, sm: true },
-  { i: 1, v: "+42", c: 5, x: "61%", y: "5%", r: "8deg", fd: 10, fdl: -7 },
+  { i: 1, v: "+42", c: 5, x: "61%", y: "5%", r: "8deg", fd: 10, fdl: -7, sm: true },
   { i: 8, v: "MIT", c: 7, x: "71%", y: "16%", r: "-5deg", fd: 12, fdl: -3, sm: true },
   { i: 4, v: "63 days", c: 4, x: "63%", y: "34%", r: "-9deg", fd: 14, fdl: -4, sm: true },
   { i: 5, v: "2,918", c: 2, x: "66%", y: "60%", r: "5deg", fd: 9, fdl: -8, sm: true },
@@ -229,6 +251,13 @@ function badgeQuery(url: string, label: string, color: string, styleType: string
   return new URLSearchParams({ url, label, color, styleType }).toString()
 }
 
+function githubSlug(value: string): string | null {
+  const normalized = value.trim().replace(/^https?:\/\//i, "").replace(/^www\./i, "")
+  const match = normalized.match(/^github\.com\/([^/?#]+)(?:\/([^/?#]+))?\/?(?:[?#].*)?$/i)
+  if (!match) return null
+  return match[2] ? `${match[1]}/${match[2]}` : match[1]
+}
+
 /* ===================== Helpers ===================== */
 
 // White text is unreadable on a light background. Measure luminance and flip.
@@ -283,6 +312,10 @@ export function BadziLanding() {
   const [urlVal, setUrlVal] = useState("")
   const [labelVal, setLabelVal] = useState("")
   const [copyLabel, setCopyLabel] = useState<string | null>(null)
+  const [menuOpen, setMenuOpen] = useState(false)
+  // Set when "Make the badge" is clicked with an empty URL, so the silent
+  // no-op becomes visible feedback instead of a dead button.
+  const [urlError, setUrlError] = useState<"required" | "invalid" | null>(null)
   // Nothing is shown until the user clicks "Make the badge" with a URL.
   const [generated, setGenerated] = useState(false)
   // Start with .animate present from the very first render (server + client)
@@ -314,10 +347,7 @@ export function BadziLanding() {
   }, [])
 
   const slug = useCallback(() => {
-    const v = (urlVal || "username").trim()
-    return (
-      v.replace(/^https?:\/\//, "").replace(/^github\.com\//, "").replace(/\/+$/, "") || "username"
-    )
+    return githubSlug(urlVal) || "username"
   }, [urlVal])
 
   const key = (labelVal || "").trim() || t.labelDefault
@@ -371,7 +401,17 @@ export function BadziLanding() {
 
   // "Make the badge" reveals the preview, README badge, and markdown.
   const makeBadge = () => {
-    if (urlVal.trim()) setGenerated(true)
+    if (!urlVal.trim()) {
+      // Previously a silent no-op — the button looked broken.
+      setUrlError("required")
+      return
+    }
+    if (!githubSlug(urlVal)) {
+      setUrlError("invalid")
+      return
+    }
+    setUrlError(null)
+    setGenerated(true)
   }
 
   const doCopy = () => {
@@ -400,7 +440,8 @@ export function BadziLanding() {
           <div className="mark">
             <i>B</i>Badzi
           </div>
-          <nav>
+          {/* Desktop nav */}
+          <nav className="topbar-nav-desktop">
             {t.nav.map((n, i) => (
               <Link href={NAV_HREFS[i]} key={n}>
                 {n}
@@ -424,6 +465,48 @@ export function BadziLanding() {
               </Link>
             )}
           </nav>
+
+          {/* Hamburger (mobile) — without it the nav overflows a phone
+              viewport and Pricing/Docs/Sign in become unreachable. */}
+          <button
+            type="button"
+            className="topbar-hamburger"
+            aria-label={menuOpen ? t.menuClose : t.menuOpen}
+            aria-expanded={menuOpen}
+            onClick={() => setMenuOpen((o) => !o)}
+          >
+            <span />
+            <span />
+            <span />
+          </button>
+
+          {/* Mobile dropdown */}
+          {menuOpen && (
+            <nav className="topbar-nav-mobile" onClick={() => setMenuOpen(false)}>
+              {t.nav.map((n, i) => (
+                <Link href={NAV_HREFS[i]} key={n}>
+                  {n}
+                </Link>
+              ))}
+              {!loading && user ? (
+              <Link href="/profile" className="signin signin-profile">
+                {user.profileImageUrl ? (
+                  <img
+                    src={user.profileImageUrl}
+                    alt=""
+                    className="profile-avatar"
+                    referrerPolicy="no-referrer"
+                  />
+                ) : null}
+                {user.name || user.username}
+              </Link>
+            ) : (
+              <Link href="/signin" className="signin">
+                {t.signin}
+              </Link>
+            )}
+            </nav>
+          )}
         </header>
 
         <div className="stage">
@@ -433,15 +516,25 @@ export function BadziLanding() {
               <p className="sub">{t.sub}</p>
 
               <div className="bar">
+                <label htmlFor="badzi-url" className="sr-only">
+                  {t.urlLabel}
+                </label>
                 <input
+                  id="badzi-url"
                   type="text"
                   inputMode="url"
                   placeholder="github.com/username"
                   value={urlVal}
+                  aria-invalid={Boolean(urlError) || undefined}
+                  aria-describedby={urlError ? "badzi-url-error" : undefined}
                   onChange={(e) => {
                     setUrlVal(e.target.value)
                     setPicked(-1)
-                    if (!e.target.value.trim()) setGenerated(false)
+                    if (urlError) setUrlError(null)
+                    // A generated badge belongs to one validated URL. Hide it
+                    // as soon as that URL changes so stale Markdown never
+                    // appears to describe the new input.
+                    setGenerated(false)
                   }}
                   onKeyDown={(e) => {
                     if (e.key === "Enter") makeBadge()
@@ -451,6 +544,11 @@ export function BadziLanding() {
                   {t.make}
                 </button>
               </div>
+              {urlError && (
+                <p className="bar-error" id="badzi-url-error" role="alert">
+                  {urlError === "required" ? t.urlRequired : t.urlInvalid}
+                </p>
+              )}
 
               <div className="opts">
                 <div className="field">
@@ -509,6 +607,7 @@ export function BadziLanding() {
                     </div>
                   )}
                   <div className="swatches" role="group">
+                    <span className="swatch-label">{t.color}</span>
                     {palette.map((p) => (
                       <button
                         key={p.name}
@@ -524,6 +623,7 @@ export function BadziLanding() {
                 </div>
               </div>
 
+              {!generated && <p className="result-hint" aria-live="polite">{t.resultHint}</p>}
               {generated && (
                 <div className="result">
                   <div className={locked ? "snippet locked" : "snippet"}>
@@ -542,10 +642,10 @@ export function BadziLanding() {
                 <span className="book">📕</span>
                 <a href="#">{slug().split("/")[0] || "username"}</a>
                 <span>/</span>
-                <b>my-project</b>
+                <b>{slug().split("/")[1] || "my-project"}</b>
               </div>
               <div className="body">
-                <h2>my-project</h2>
+                <h2>{slug().split("/")[1] || "my-project"}</h2>
                 <p className="tagline">{t.readmeTagline}</p>
                 <div className="badges">
                   <span dangerouslySetInnerHTML={{ __html: readmeNeighboursHTML }} />
@@ -557,7 +657,7 @@ export function BadziLanding() {
                     </>
                   )}
                 </div>
-                <p>{t.readmeAbout}</p>
+                <p>{t.readmeAbout.replace("my-project", slug().split("/")[1] || "my-project")}</p>
                 <h3>{t.readmeFeaturesTitle}</h3>
                 <ul>
                   {t.readmeFeatures.map((f) => (
