@@ -22,9 +22,23 @@ interface RequestOptions extends RequestInit {
   _skipRefresh?: boolean
 }
 
+// The backend answers an unauthenticated call with a 302 to its HTML login
+// page rather than a 401, so treat that redirect as "needs auth" too.
+function isAuthFailure(res: Response): boolean {
+  return res.status === 401 || res.redirected
+}
+
 async function unwrap<T>(res: Response, path: string): Promise<T> {
   if (!res.ok) {
     throw new ApiError(res.status, `Request failed: ${res.status} ${path}`)
+  }
+  // An unauthenticated call is answered with a 302 to the backend's HTML login
+  // page, which fetch follows silently — so `res.ok` is true but the body is
+  // HTML. Without this guard `res.json()` throws a bare SyntaxError that
+  // bypasses every `catch (ApiError)` and crashes the server render.
+  const contentType = res.headers.get("content-type") || ""
+  if (res.redirected || !contentType.includes("json")) {
+    throw new ApiError(401, `Not authenticated: ${path}`)
   }
   const body = (await res.json()) as ApiResponse<T> | T
   if (body && typeof body === "object" && "data" in (body as ApiResponse<T>)) {
@@ -47,7 +61,7 @@ export async function apiGet<T>(path: string, opts: RequestOptions = {}): Promis
     cache: "no-store",
   })
 
-  if (res.status === 401 && !_skipRefresh && typeof window !== "undefined") {
+  if (isAuthFailure(res) && !_skipRefresh && typeof window !== "undefined") {
     const { refreshTokens } = await import("./auth")
     const newToken = await refreshTokens()
     if (newToken) {
@@ -79,7 +93,7 @@ export async function apiMutate<T>(
     cache: "no-store",
   })
 
-  if (res.status === 401 && !_skipRefresh && typeof window !== "undefined") {
+  if (isAuthFailure(res) && !_skipRefresh && typeof window !== "undefined") {
     const { refreshTokens } = await import("./auth")
     const newToken = await refreshTokens()
     if (newToken) {
