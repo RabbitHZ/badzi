@@ -17,7 +17,7 @@ const ENDPOINTS = [
 ]
 
 export default function DocsPage() {
-  const example = `![Views](${API_BASE}/api/badges?url=username&label=Views&color=007EC6&styleType=default)`
+  const example = `![Views](${API_BASE}/api/badges?url=username&label=Views&color=007EC6&styleType=basic)`
 
   return (
     <PageShell

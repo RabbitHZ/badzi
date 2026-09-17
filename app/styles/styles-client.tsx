@@ -8,18 +8,18 @@ import type { BadgeStyle, BadgeStyleRequest } from "@/lib/types"
 
 // Preset styles shown to everyone (no auth required).
 const PRESETS: Pick<BadgeStyle, "label" | "color" | "styleType">[] = [
-  { label: "Views", color: "007EC6", styleType: "default" },
-  { label: "Downloads", color: "4C1", styleType: "default" },
-  { label: "Stars", color: "DFB317", styleType: "default" },
-  { label: "Build", color: "E05D44", styleType: "default" },
+  { label: "Views", color: "007EC6", styleType: "basic" },
+  { label: "Downloads", color: "4C1", styleType: "basic" },
+  { label: "Stars", color: "DFB317", styleType: "basic" },
+  { label: "Build", color: "E05D44", styleType: "basic" },
   { label: "Maple", color: "FF9500", styleType: "maple" },
   { label: "Rabbit", color: "ED87B8", styleType: "rabbit" },
 ]
 
-const STYLE_TYPES = ["default", "flat", "plastic", "maple", "rabbit"]
+const STYLE_TYPES = ["basic", "flat", "plastic", "maple", "rabbit"]
 const BLANK: BadgeStyleRequest = {
   name: "",
-  styleType: "default",
+  styleType: "basic",
   color: "007EC6",
   label: "Views",
   icon: "",

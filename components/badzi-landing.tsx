@@ -22,7 +22,7 @@ interface Palette {
 }
 
 interface StyleType {
-  id: "default" | "maple" | "rabbit"
+  id: "basic" | "maple" | "rabbit"
   l: string
   r: string
   locked: boolean
@@ -54,7 +54,7 @@ const PALETTES: Record<Shape, Palette[]> = {
 
 // Style types are a decorative pair. Maple and Rabbit are locked.
 const TYPES: StyleType[] = [
-  { id: "default", l: "", r: "", locked: false },
+  { id: "basic", l: "", r: "", locked: false },
   { id: "maple", l: "🍁", r: "🍁", locked: true },
   { id: "rabbit", l: "🐰", r: "🥕", locked: true },
 ]
@@ -100,7 +100,7 @@ const I18N: Record<Lang, Strings> = {
     lockmsg:
       "Maple and Rabbit are paid styles. Preview them here, then unlock in the Shop to copy the markdown.",
     shapes: { split: "Split", pill: "Pill" },
-    types: { default: "Default", maple: "Maple", rabbit: "Rabbit" },
+    types: { basic: "Default", maple: "Maple", rabbit: "Rabbit" },
     nav: ["Styles", "Shop", "Pricing", "Docs"],
     signin: "Sign in",
     useBadge: "Use this badge",
@@ -131,7 +131,7 @@ const I18N: Record<Lang, Strings> = {
     lockmsg:
       "Maple과 Rabbit은 유료 스타일입니다. 미리보기는 자유롭게 하시고, 마크다운 복사는 Shop에서 잠금을 해제한 뒤 가능합니다.",
     shapes: { split: "분할형", pill: "알약형" },
-    types: { default: "기본", maple: "메이플", rabbit: "래빗" },
+    types: { basic: "기본", maple: "메이플", rabbit: "래빗" },
     nav: ["스타일", "상점", "요금제", "문서"],
     signin: "로그인",
     useBadge: "이 뱃지 사용하기",
